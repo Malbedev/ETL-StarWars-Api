@@ -5,7 +5,8 @@ SCHEMA "data-engineer-database"."mauroalberelli_coderhouse";
 DROP TABLE IF EXISTS mauroalberelli_coderhouse.stage_starwars_table;
 
 CREATE TABLE stage_starwars_table(
-    id  SERIAL PRIMARY KEY,
+    id INT IDENTITY(1,1),
+    primary KEY(id),
 	Name	        VARCHAR(200)
 ,   Gender          VARCHAR(50)
 ,   Birth_year      VARCHAR(50)
@@ -18,7 +19,6 @@ CREATE TABLE stage_starwars_table(
 
 
 );
-
 SELECT  
 *
 FROM mauroalberelli_coderhouse.stage_starwars_table ;

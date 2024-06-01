@@ -15,11 +15,11 @@ user_credentials = {
 
 schema = "mauroalberelli_coderhouse"
 data_conn = DataConn(user_credentials, schema)
-google = DataManager('goog')
+StarWarsApi = DataManager()
 
 try:
     data_conn.get_conn()
-    data = google.data_transform()
-    data_conn.upload_data(data, 'stage_yfinance_google')
+    data=StarWarsApi.data_transform()
+    data_conn.upload_data(data,'stage_starwars_table')
 finally:
     data_conn.close_conn()

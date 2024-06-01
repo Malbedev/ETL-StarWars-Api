@@ -1,6 +1,8 @@
-import yfinance as yf
+
 import pandas as pd
 import logging
+import requests
+import json
 
 from io import StringIO
 from sqlalchemy import create_engine
@@ -66,16 +68,53 @@ class DataConn:
 
 class DataManager:
 
-    def __init__(self,company: str):
-        try:
-            self.manager = yf.Ticker(company)
-        except  Exception as e:
-            logging.error(e)
+    def __init__(self):
+        self.data = None
 
     def get_data(self):
         try:
             logging.info("Creacion de data")
-            return self.manager.income_stmt
+            data_list={'Name':[],'Gender':[],'Birth_year':[],'Eye_color':[],'Skin_color':[],'Hair_color':[],'Mass':[],'Height':[],'Homeworld':[]}
+            endpoint=1
+            while endpoint < 82:
+                if endpoint == 17:
+                    endpoint += 1
+                    continue
+
+                url="https://www.swapi.tech/api/people/{}".format(endpoint)
+                response=requests.get(url)
+                data_json=response.json()['result']
+                homeworld_url=data_json['properties']['homeworld']
+
+   
+                name=data_json['properties']['name']
+                gender=data_json['properties']['gender']
+                birth=data_json['properties']['birth_year']
+                eyes=data_json['properties']['eye_color']
+                skin=data_json['properties']['skin_color']
+                hair=data_json['properties']['hair_color']
+                mass=data_json['properties']['mass']
+                height=data_json['properties']['height']
+                homeworld=requests.get(homeworld_url).json()['result']['properties']['name']
+
+                hair=hair.replace(", ","-")
+                eyes=eyes.replace(", ","-")
+                skin=skin.replace(", ","-")
+
+                data_list['Name'].append(name)
+                data_list['Gender'].append(gender)
+                data_list['Birth_year'].append(birth)
+                data_list['Eye_color'].append(eyes)
+                data_list['Skin_color'].append(skin)
+                data_list['Hair_color'].append(hair)
+                data_list['Mass'].append(mass)
+                data_list['Height'].append(height)
+                data_list['Homeworld'].append(homeworld)
+
+                endpoint += 1
+            
+            return data_list
+            
         except Exception as e:
             logging.error(e)
         finally:
@@ -83,22 +122,12 @@ class DataManager:
 
     def data_transform(self):
         try:
+            logging.info('Data to Pandas Dataframe')
             data = self.get_data()
-            logging.info("rename columns")
-            data = data.iloc[:,:4]
-            data.columns =["stock_actions","revenue","value","avg_data"]
-            logging.info("change index")
-            data = data.rename_axis('specific_area').reset_index()
-            logging.info("add date to stage the data")
-            data["date_to_stage"] = self.get_data().columns[0].date()
-            logging.info("save the data")
-            data = data.fillna(0)
-            buffer = StringIO()
-            data.info(buf=buffer)
-            s = buffer.getvalue()
-            logging.info(s)
+            df=pd.DataFrame(data)
+           
             
-            return data
+            return df
         
         except Exception as e:
             logging.error(e)

@@ -1,0 +1,6 @@
+root - INFO - Connection created
+root - INFO - Data to Pandas Dataframe
+root - INFO - Creacion de data
+root - WARNING - Check the data format
+root - INFO - Data from the DataFrame has been uploaded to the mauroalberelli_coderhouse.stage_starwars_table table in Redshift.
+root - INFO - Connection to Redshift closed.
