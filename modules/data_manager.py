@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 logging.basicConfig(
     filename='app.log',
     filemode='a',
-    format='%(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s: %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
     
 class DataConn:
@@ -73,7 +73,8 @@ class DataManager:
 
     def get_data(self):
         try:
-            logging.info("Creacion de data")
+            logging.info("Extracting data from Api ...")
+            logging.info("This operation could take several minutes...")
             data_list={'Name':[],'Gender':[],'Birth_year':[],'Eye_color':[],'Skin_color':[],'Hair_color':[],'Mass':[],'Height':[],'Homeworld':[]}
             endpoint=1
             while endpoint < 82:
